@@ -37,23 +37,50 @@ async function main() {
 
 
       printYellow("开始领取VIP...")
-      for (let i = 1; i <= 8; i++) {
-        // ad获取vip
-        const ad = await send(`/youth/vip?timestrap=${Date.now()}`, "GET", headers)
-        // 签到出现问题
-        // errorMsg[`${userDetail?.data?.nickname} ad${i}`] = ad
-        if (ad.status === 1) {
-          printGreen(`第${i}次领取成功`)
-          if (i != 8) {
-            await delay(30 * 1000)
+      
+      // ad获取一天vip
+      const ad = await send(`/youth/day/vip?timestrap=${Date.now()}`, "GET", headers)
+      
+      // 签到出现问题
+      // errorMsg[`${userDetail?.data?.nickname} ad${i}`] = ad
+      if (ad.status === 1) {
+        printGreen(`领取一天vip成功`)
+        await delay(30 * 1000)
+
+        
+        printGreen(`尝试升级`)
+        const adup = await send(`/youth/day/vip/upgrade?timestrap=${Date.now()}`, "GET", headers)
+          if(adup.status === 1){
+            printGreen(`升级一天vip成功`)
+          }else{
+            printRed(`升级失败，代码写错了`)
+            console.dir(adup, { depth: null })
           }
-        } else {
-          printRed(`第${i}次领取失败，目前属于已知问题`)
-          console.dir(ad, { depth: null })
-          // errorMsg[userDetail?.data?.nickname + " ad"] = ad
-          break
-        }
+        
+        
+      } else {
+        printRed(`领取失败`)
+        console.dir(ad, { depth: null })
+        // errorMsg[userDetail?.data?.nickname + " ad"] = ad
       }
+      
+      // for (let i = 1; i <= 8; i++) {
+      //   // ad获取vip
+      //   const ad = await send(`/youth/vip?timestrap=${Date.now()}`, "GET", headers)
+      //   // 签到出现问题
+      //   // errorMsg[`${userDetail?.data?.nickname} ad${i}`] = ad
+      //   if (ad.status === 1) {
+      //     printGreen(`第${i}次领取成功`)
+      //     if (i != 8) {
+      //       await delay(30 * 1000)
+      //     }
+      //   } else {
+      //     printRed(`第${i}次领取失败，目前属于已知问题`)
+      //     console.dir(ad, { depth: null })
+      //     // errorMsg[userDetail?.data?.nickname + " ad"] = ad
+      //     break
+      //   }
+      // }
 
       // 开始听歌
       printYellow(`开始听歌领取VIP...`)
